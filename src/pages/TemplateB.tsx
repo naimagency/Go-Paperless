@@ -122,9 +122,18 @@ export default function TemplateB() {
         <div className="bg-white rounded-2xl p-10 border border-[#C8A24A]/30 shadow-lg mb-8">
           <ul className="space-y-5">
             {whatYouGetItems.map(({ icon: Icon, text }) => (
-              <li key={text} className="flex items-start gap-2 sm:gap-3 rounded-lg border border-[#C8A24A]/20 bg-white p-3 sm:p-5 shadow-sm text-left">
+              <li key={text} className="flex items-start gap-3 rounded-lg border border-[#C8A24A]/20 bg-white p-4 sm:p-5 shadow-sm text-left">
                 <Icon className="mt-0.5 h-5 w-5 sm:h-6 sm:w-6 shrink-0 text-[#C8A24A]" />
-                <span className="-ml-3 sm:ml-0 text-[15px] sm:text-lg leading-snug text-gray-700 font-light">{text}</span>
+                <span className="text-base sm:text-lg leading-snug text-gray-700 font-light">
+                  {text.includes('(Booking/Registration/Invoice)') ? (
+                    <>
+                      Custom Digital Form{' '}
+                      <span className="block sm:inline -ml-2 sm:ml-0">(Booking/Registration/Invoice)</span>
+                    </>
+                  ) : (
+                    text
+                  )}
+                </span>
               </li>
             ))}
           </ul>
