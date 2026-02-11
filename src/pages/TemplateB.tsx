@@ -8,6 +8,7 @@ const WHATSAPP_NUMBER = '27696133396';
 const WHATSAPP_DISPLAY = '+27 696 133 396';
 const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20Naim%20Agency%20I%20want%20to%20go%20paperless`;
 const EMAIL = 'tech@naiminvestments.com';
+const CTA_BUTTON_CLASS = 'inline-flex items-center justify-center gap-2 rounded-full border border-[#C8A24A] bg-white px-8 py-3 text-[#C8A24A] font-light tracking-wide hover:bg-[#fff8e8] transition-all';
 
 const whatYouGetItems = [
   { icon: Smartphone, text: 'Custom Digital Form (Booking/Registration/Invoice)' },
@@ -51,14 +52,20 @@ export default function TemplateB() {
         @keyframes dissolveIn { 0%, 45% { opacity: 0; filter: blur(1.5px); } 55%, 100% { opacity: 1; filter: blur(0px); } }
       `}</style>
       <header className="bg-white sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-5 grid grid-cols-[1fr_auto_1fr] items-center">
-          <div className="flex items-center gap-3 justify-self-start">
-            <img src={naimLogo} alt="Naim Agency logo" className="h-28 w-28 sm:h-32 sm:w-32 object-contain" />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-5">
+          <div className="flex items-center justify-between">
+            <img src={naimLogo} alt="Naim Agency logo" className="h-24 w-24 sm:h-28 sm:w-28 object-contain" />
+            <div className="flex items-center gap-3 sm:gap-6 sm:justify-self-end">
+              <a href="#contact" className="hidden sm:block text-gray-600 hover:text-[#C8A24A] transition-colors font-light">Contact</a>
+              <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className={`${CTA_BUTTON_CLASS} px-4 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base`}>
+                <span className="sm:hidden">Book Now</span>
+                <span className="hidden sm:inline">Book Appointment</span>
+              </a>
+            </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-light text-gray-900 text-center justify-self-center">Go <span className="text-[#C8A24A]">Paperless</span></h1>
-          <div className="flex items-center gap-6 justify-self-end">
-            <a href="#contact" className="hidden sm:block text-gray-600 hover:text-[#C8A24A] transition-colors font-light">Contact</a>
-            <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="bg-[#C8A24A] text-white px-6 py-2.5 rounded-full hover:bg-[#B8942A] transition-all shadow-md hover:shadow-lg font-light tracking-wide">Book Appointment</a>
+
+          <div className="mt-1 sm:mt-2 text-center">
+            <h1 className="text-2xl sm:text-3xl font-light text-gray-900">Go <span className="text-[#C8A24A]">Paperless</span></h1>
           </div>
         </div>
       </header>
@@ -92,7 +99,7 @@ export default function TemplateB() {
           We build mobile forms that save client details neatly and generate PDFs automatically.
         </p>
 
-        <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="inline-flex w-full sm:w-auto justify-center items-center gap-2 bg-[#C8A24A] text-white px-10 py-4 rounded-full hover:bg-[#B8942A] transition-all shadow-lg hover:shadow-xl text-lg font-light tracking-wide">
+        <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className={`${CTA_BUTTON_CLASS} w-full sm:w-auto text-lg`}>
           Book Appointment
         </a>
         <p className="text-sm text-gray-500 mt-4 font-light italic">No pressure. If you don’t need this, We’ll tell you.</p>
@@ -103,9 +110,9 @@ export default function TemplateB() {
         <div className="bg-white rounded-2xl p-10 border border-[#C8A24A]/30 shadow-lg mb-8">
           <ul className="space-y-5">
             {whatYouGetItems.map(({ icon: Icon, text }) => (
-              <li key={text} className="flex items-start gap-4 rounded-lg border border-[#C8A24A]/20 bg-white p-5 shadow-sm">
-                <Icon className="mt-0.5 h-6 w-6 shrink-0 text-[#C8A24A]" />
-                <span className="text-lg text-gray-700 font-light">{text}</span>
+              <li key={text} className="flex items-start gap-3 rounded-lg border border-[#C8A24A]/20 bg-white p-4 sm:p-5 shadow-sm text-left">
+                <Icon className="mt-0.5 h-5 w-5 sm:h-6 sm:w-6 shrink-0 text-[#C8A24A]" />
+                <span className="text-base sm:text-lg leading-snug text-gray-700 font-light">{text}</span>
               </li>
             ))}
           </ul>
@@ -167,7 +174,7 @@ export default function TemplateB() {
         <div className="max-w-5xl mx-auto px-6 text-center">
           <h2 className="text-3xl sm:text-4xl font-light text-gray-900 mb-6">Ready to <span className="text-[#C8A24A]">Go Paperless?</span></h2>
           <p className="text-lg text-gray-600 font-light mb-10 max-w-2xl mx-auto">Book your appointment today. No commitment, just honest advice.</p>
-          <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-[#C8A24A] text-white px-10 py-4 rounded-full hover:bg-[#B8942A] transition-all shadow-lg hover:shadow-xl text-lg font-light tracking-wide mb-10">Book Appointment</a>
+          <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className={`${CTA_BUTTON_CLASS} text-lg mb-10`}>Book Appointment</a>
 
           <div className="grid md:grid-cols-[220px,1fr] gap-8 items-center text-left max-w-3xl mx-auto">
             <div className="flex justify-center md:justify-start">
