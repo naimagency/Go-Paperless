@@ -53,19 +53,31 @@ export default function TemplateB() {
       `}</style>
       <header className="bg-white sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-5">
-          <div className="flex items-center justify-between">
-            <img src={naimLogo} alt="Naim Agency logo" className="h-24 w-24 sm:h-28 sm:w-28 object-contain" />
-            <div className="flex items-center gap-3 sm:gap-6 sm:justify-self-end">
-              <a href="#contact" className="hidden sm:block text-gray-600 hover:text-[#C8A24A] transition-colors font-light">Contact</a>
-              <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className={`${CTA_BUTTON_CLASS} px-4 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base`}>
-                <span className="sm:hidden">Book Now</span>
-                <span className="hidden sm:inline">Book Appointment</span>
+          {/* Mobile layout */}
+          <div className="sm:hidden">
+            <div className="flex items-center justify-between">
+              <img src={naimLogo} alt="Naim Agency logo" className="h-24 w-24 object-contain" />
+              <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className={`${CTA_BUTTON_CLASS} px-4 py-2.5 text-sm`}>
+                Book Now
               </a>
+            </div>
+            <div className="mt-1 text-center">
+              <h1 className="text-2xl font-light text-gray-900">Go <span className="text-[#C8A24A]">Paperless</span></h1>
             </div>
           </div>
 
-          <div className="mt-1 sm:mt-2 text-center">
-            <h1 className="text-2xl sm:text-3xl font-light text-gray-900">Go <span className="text-[#C8A24A]">Paperless</span></h1>
+          {/* Tablet/Desktop layout */}
+          <div className="hidden sm:grid grid-cols-[1fr_auto_1fr] items-center">
+            <div className="justify-self-start">
+              <img src={naimLogo} alt="Naim Agency logo" className="h-28 w-28 object-contain" />
+            </div>
+            <h1 className="text-3xl font-light text-gray-900 text-center justify-self-center">Go <span className="text-[#C8A24A]">Paperless</span></h1>
+            <div className="flex items-center gap-6 justify-self-end">
+              <a href="#contact" className="text-gray-600 hover:text-[#C8A24A] transition-colors font-light">Contact</a>
+              <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className={`${CTA_BUTTON_CLASS} px-8 py-3 text-base`}>
+                Book Appointment
+              </a>
+            </div>
           </div>
         </div>
       </header>
@@ -110,9 +122,9 @@ export default function TemplateB() {
         <div className="bg-white rounded-2xl p-10 border border-[#C8A24A]/30 shadow-lg mb-8">
           <ul className="space-y-5">
             {whatYouGetItems.map(({ icon: Icon, text }) => (
-              <li key={text} className="flex items-start gap-3 rounded-lg border border-[#C8A24A]/20 bg-white p-4 sm:p-5 shadow-sm text-left">
+              <li key={text} className="flex items-start gap-2 sm:gap-3 rounded-lg border border-[#C8A24A]/20 bg-white p-3 sm:p-5 shadow-sm text-left">
                 <Icon className="mt-0.5 h-5 w-5 sm:h-6 sm:w-6 shrink-0 text-[#C8A24A]" />
-                <span className="text-base sm:text-lg leading-snug text-gray-700 font-light">{text}</span>
+                <span className="-ml-1 sm:ml-0 text-base sm:text-lg leading-snug text-gray-700 font-light">{text}</span>
               </li>
             ))}
           </ul>
