@@ -128,7 +128,7 @@ export default function TemplateB() {
                   {text.includes('(Booking/Registration/Invoice)') ? (
                     <>
                       Custom Digital Form{' '}
-                      <span className="block sm:inline -ml-2 sm:ml-0">(Booking/Registration/Invoice)</span>
+                      <span className="block sm:inline -ml-5 sm:ml-0">(Booking/Registration/Invoice)</span>
                     </>
                   ) : (
                     text
@@ -194,7 +194,7 @@ export default function TemplateB() {
       <section id="contact" className="bg-gray-50 py-20">
         <div className="max-w-5xl mx-auto px-6 text-center">
           <h2 className="text-3xl sm:text-4xl font-light text-gray-900 mb-6">Ready to <span className="text-[#C8A24A]">Go Paperless?</span></h2>
-          <p className="text-lg text-gray-600 font-light mb-10 max-w-2xl mx-auto">Book your appointment today. No commitment, just honest advice.</p>
+          <p className="text-lg text-gray-600 font-light mb-10 max-w-2xl mx-auto">Book your appointment today.<br />No commitment, just honest advice.</p>
           <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className={`${CTA_BUTTON_CLASS} text-lg mb-10`}>Book Appointment</a>
 
           <div className="grid md:grid-cols-[220px,1fr] gap-8 items-center text-left max-w-3xl mx-auto">
