@@ -1,13 +1,14 @@
-import { FileText, Smartphone, Shield, ChevronDown, List, GraduationCap, Phone } from 'lucide-react';
-import { useState } from 'react';
+import { FileText, Smartphone, Shield, ChevronDown, List, GraduationCap, Phone, X } from 'lucide-react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 import beforeImg from '@/assets/before-paperwork.jpg';
 import afterImg from '@/assets/after-digital.jpg';
 import naimLogo from '@/assets/naim-logo.png';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const WHATSAPP_NUMBER = '27696133396';
 const WHATSAPP_DISPLAY = '+27 696 133 396';
 const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20Naim%20Agency%20I%20want%20to%20go%20paperless`;
-const EMAIL = 'tech@naiminvestments.com';
+const EMAIL = 'paperless@naiminvestments.com';
 const CTA_BUTTON_CLASS = 'inline-flex items-center justify-center gap-2 rounded-full border border-[#C8A24A] bg-white px-8 py-3 text-[#C8A24A] font-light tracking-wide hover:bg-[#fff8e8] transition-all';
 
 const whatYouGetItems = [
@@ -17,9 +18,88 @@ const whatYouGetItems = [
   { icon: GraduationCap, text: 'Short Training so you can run it yourself' },
 ];
 
+const timeSlotOptions = [
+  'Monday — 14:30',
+  'Monday — 15:00',
+  'Monday — 15:30',
+  'Monday — 16:00',
+  'Monday — 16:30',
+  'Saturday — 12:00',
+  'Saturday — 12:30',
+  'Saturday — 13:00',
+  'Saturday — 13:30',
+];
+
 export default function TemplateB() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    projectDetails: '',
+    bookingTime: '',
+  });
+
   const toggleFaq = (index: number) => setOpenFaq(openFaq === index ? null : index);
+  const openFormModal = () => setIsFormModalOpen(true);
+  const closeFormModal = () => setIsFormModalOpen(false);
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubmitError('');
+    setIsSubmitting(true);
+
+    try {
+      const payload = {
+        name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        message: formData.projectDetails || 'No additional project details provided.',
+        bookingTime: formData.bookingTime || 'No time slot selected.',
+        _subject: `New Go Paperless consultation request from ${formData.fullName}`,
+        _cc: 'naimautomations@gmail.com',
+      };
+
+      const response = await fetch('https://formsubmit.co/ajax/paperless@naiminvestments.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !(result.success === 'true' || result.success === true)) {
+        throw new Error('Submission failed');
+      }
+
+      setIsSubmitted(true);
+      setFormData({
+        fullName: '',
+        email: '',
+        phone: '',
+        projectDetails: '',
+        bookingTime: '',
+      });
+      event.currentTarget.reset();
+    } catch (error) {
+      setIsSubmitted(false);
+      setSubmitError('Sorry, we could not submit your request right now. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const faqs = [
     {
@@ -50,6 +130,12 @@ export default function TemplateB() {
         .template-b, .template-b * { font-family: var(--font-body) !important; }
         @keyframes dissolveOut { 0%, 45% { opacity: 1; filter: blur(0px); } 55%, 100% { opacity: 0; filter: blur(1.5px); } }
         @keyframes dissolveIn { 0%, 45% { opacity: 0; filter: blur(1.5px); } 55%, 100% { opacity: 1; filter: blur(0px); } }
+        .template-b select option:checked,
+        .template-b select option:hover,
+        .template-b select option:focus {
+          background: #C8A24A !important;
+          color: #ffffff !important;
+        }
       `}</style>
       <header className="bg-white sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-5">
@@ -57,9 +143,9 @@ export default function TemplateB() {
           <div className="sm:hidden">
             <div className="flex items-center justify-between">
               <img src={naimLogo} alt="Naim Agency logo" className="h-24 w-24 object-contain" />
-              <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className={`${CTA_BUTTON_CLASS} px-4 py-2.5 text-sm`}>
+              <button type="button" onClick={openFormModal} className={`${CTA_BUTTON_CLASS} px-4 py-2.5 text-sm`}>
                 Book Now
-              </a>
+              </button>
             </div>
             <div className="mt-1 text-center">
               <h1 className="text-2xl font-light text-gray-900">Go <span className="text-[#C8A24A]">Paperless</span></h1>
@@ -74,9 +160,9 @@ export default function TemplateB() {
             <h1 className="text-3xl font-light text-gray-900 text-center justify-self-center">Go <span className="text-[#C8A24A]">Paperless</span></h1>
             <div className="flex items-center gap-6 justify-self-end">
               <a href="#contact" className="text-gray-600 hover:text-[#C8A24A] transition-colors font-light">Contact</a>
-              <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className={`${CTA_BUTTON_CLASS} px-8 py-3 text-base`}>
+              <button type="button" onClick={openFormModal} className={`${CTA_BUTTON_CLASS} px-8 py-3 text-base`}>
                 Book Appointment
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -107,13 +193,12 @@ export default function TemplateB() {
           <span className="text-[#C8A24A]">and get instant PDFs</span>
         </h1>
         <p className="text-sm sm:text-base text-gray-600 mb-12 max-w-3xl mx-auto font-light leading-relaxed">
-          We help South African small businesses stop wasting time on admin.<br />
-          We build mobile forms that save client details neatly and generate PDFs automatically.
+          We help businesses stop wasting time on admin. We build mobile forms that save client details neatly and generate PDFs.
         </p>
 
-        <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className={`${CTA_BUTTON_CLASS} w-full sm:w-auto text-lg`}>
+        <button type="button" onClick={openFormModal} className={`${CTA_BUTTON_CLASS} w-full sm:w-auto text-lg`}>
           Book Appointment
-        </a>
+        </button>
         <p className="text-sm text-gray-500 mt-4 font-light italic">No pressure. If you don’t need this, We’ll tell you.</p>
       </section>
 
@@ -193,9 +278,118 @@ export default function TemplateB() {
 
       <section id="contact" className="bg-gray-50 py-20">
         <div className="max-w-5xl mx-auto px-6 text-center">
-          <h2 className="text-3xl sm:text-4xl font-light text-gray-900 mb-6">Ready to <span className="text-[#C8A24A]">Go Paperless?</span></h2>
-          <p className="text-lg text-gray-600 font-light mb-10 max-w-2xl mx-auto">Book your appointment today.<br />No commitment, just honest advice.</p>
-          <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className={`${CTA_BUTTON_CLASS} text-lg mb-10`}>Book Appointment</a>
+          <h2 className="text-3xl sm:text-4xl font-light text-gray-900 mb-6">Let’s <span className="text-[#C8A24A]">Go Paperless</span></h2>
+          <p className="text-lg text-gray-600 font-light mb-10 max-w-2xl mx-auto">Submit your details and forms below, then choose a booking time.</p>
+
+          <div className="bg-[#fffdf7] rounded-2xl border-2 border-[#C8A24A]/40 shadow-lg p-6 sm:p-10 text-left max-w-3xl mx-auto mb-10">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label htmlFor="fullName" className="block text-sm font-light text-gray-700 mb-2">Full Name *</label>
+                <input
+                  id="fullName"
+                  name="fullName"
+                  type="text"
+                  required
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  className="w-full rounded-lg border border-[#C8A24A]/40 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C8A24A]/50 focus:border-[#C8A24A]"
+                  placeholder="Full Name"
+                />
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-light text-gray-700 mb-2">Email *</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full rounded-lg border border-[#C8A24A]/40 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C8A24A]/50 focus:border-[#C8A24A]"
+                    placeholder="Email"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-light text-gray-700 mb-2">Phone *</label>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="w-full rounded-lg border border-[#C8A24A]/40 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C8A24A]/50 focus:border-[#C8A24A]"
+                    placeholder="Phone"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="projectDetails" className="block text-sm font-light text-gray-700 mb-2">Tell us about your project</label>
+                <textarea
+                  id="projectDetails"
+                  name="projectDetails"
+                  rows={4}
+                  value={formData.projectDetails}
+                  onChange={handleInputChange}
+                  className="w-full rounded-lg border border-[#C8A24A]/40 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C8A24A]/50 focus:border-[#C8A24A]"
+                  placeholder="Tell us what forms you use and what you want digitized"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="formsUpload" className="block text-sm font-light text-gray-700 mb-2">Upload forms to convert to digital</label>
+                <input
+                  id="formsUpload"
+                  name="formsUpload"
+                  type="file"
+                  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                  multiple
+                  className="w-full rounded-lg border border-[#C8A24A]/40 bg-white px-4 py-3 text-gray-700 file:mr-4 file:rounded-md file:border-0 file:bg-[#fff3d6] file:px-3 file:py-2 file:text-[#8b6b1d] file:font-light"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="bookingTime" className="block text-sm font-light text-gray-700 mb-2">Consultation appointment time slot</label>
+                <p className="text-xs sm:text-sm text-gray-500 font-light mb-2">
+                  Please choose a preferred time slot that suits you. We will then contact you to confirm the closest available date.
+                </p>
+                <Select
+                  value={formData.bookingTime || undefined}
+                  onValueChange={(value) => setFormData((prev) => ({ ...prev, bookingTime: value }))}
+                >
+                  <SelectTrigger className="w-full rounded-lg border border-[#C8A24A]/40 bg-white px-4 py-3 text-gray-800 focus:ring-2 focus:ring-[#C8A24A]/50 focus:border-[#C8A24A]">
+                    <SelectValue placeholder="Select a time slot" />
+                  </SelectTrigger>
+                  <SelectContent className="border border-[#C8A24A]/40 bg-[#fffdf7]">
+                    {timeSlotOptions.map((slot) => (
+                      <SelectItem key={`main-${slot}`} value={slot} className="focus:bg-[#C8A24A] focus:text-white">
+                        {slot}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <button type="submit" disabled={isSubmitting} className="w-full sm:w-auto inline-flex items-center justify-center rounded-full border border-[#C8A24A] bg-[#C8A24A] px-8 py-3 text-white font-light tracking-wide hover:bg-[#b18d39] transition-all text-base disabled:opacity-60 disabled:cursor-not-allowed">
+                {isSubmitting ? 'Submitting...' : 'Submit'}
+              </button>
+
+              {isSubmitted && (
+                <p className="text-[#7a5f19] bg-[#fff8e8] border border-[#C8A24A]/40 rounded-lg px-4 py-3">
+                  Thank you for your submission. We will be in touch.
+                </p>
+              )}
+
+              {submitError && (
+                <p className="text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+                  {submitError}
+                </p>
+              )}
+            </form>
+          </div>
 
           <div className="grid md:grid-cols-[220px,1fr] gap-8 items-center text-left max-w-3xl mx-auto">
             <div className="flex justify-center md:justify-start">
@@ -208,6 +402,127 @@ export default function TemplateB() {
           </div>
         </div>
       </section>
+
+      {isFormModalOpen && (
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4" onClick={closeFormModal}>
+          <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-[#fffdf7] rounded-2xl border-2 border-[#C8A24A]/40 shadow-xl p-6 sm:p-8" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-2xl font-light text-gray-900">Let’s <span className="text-[#C8A24A]">Go Paperless</span></h3>
+              <button type="button" onClick={closeFormModal} className="text-gray-500 hover:text-[#C8A24A]" aria-label="Close form">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-5 text-left">
+              <div>
+                <label htmlFor="modal-fullName" className="block text-sm font-light text-gray-700 mb-2">Full Name *</label>
+                <input
+                  id="modal-fullName"
+                  name="fullName"
+                  type="text"
+                  required
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  className="w-full rounded-lg border border-[#C8A24A]/40 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C8A24A]/50 focus:border-[#C8A24A]"
+                  placeholder="Full Name"
+                />
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label htmlFor="modal-email" className="block text-sm font-light text-gray-700 mb-2">Email *</label>
+                  <input
+                    id="modal-email"
+                    name="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full rounded-lg border border-[#C8A24A]/40 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C8A24A]/50 focus:border-[#C8A24A]"
+                    placeholder="Email"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="modal-phone" className="block text-sm font-light text-gray-700 mb-2">Phone *</label>
+                  <input
+                    id="modal-phone"
+                    name="phone"
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="w-full rounded-lg border border-[#C8A24A]/40 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C8A24A]/50 focus:border-[#C8A24A]"
+                    placeholder="Phone"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="modal-projectDetails" className="block text-sm font-light text-gray-700 mb-2">Tell us about your project</label>
+                <textarea
+                  id="modal-projectDetails"
+                  name="projectDetails"
+                  rows={4}
+                  value={formData.projectDetails}
+                  onChange={handleInputChange}
+                  className="w-full rounded-lg border border-[#C8A24A]/40 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C8A24A]/50 focus:border-[#C8A24A]"
+                  placeholder="Tell us what forms you use and what you want digitized"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="modal-formsUpload" className="block text-sm font-light text-gray-700 mb-2">Upload forms to convert to digital</label>
+                <input
+                  id="modal-formsUpload"
+                  name="formsUpload"
+                  type="file"
+                  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                  multiple
+                  className="w-full rounded-lg border border-[#C8A24A]/40 bg-white px-4 py-3 text-gray-700 file:mr-4 file:rounded-md file:border-0 file:bg-[#fff3d6] file:px-3 file:py-2 file:text-[#8b6b1d] file:font-light"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="modal-bookingTime" className="block text-sm font-light text-gray-700 mb-2">Consultation appointment time slot</label>
+                <p className="text-xs sm:text-sm text-gray-500 font-light mb-2">
+                  Please choose a preferred time slot that suits you. We will then contact you to confirm the closest available date.
+                </p>
+                <Select
+                  value={formData.bookingTime || undefined}
+                  onValueChange={(value) => setFormData((prev) => ({ ...prev, bookingTime: value }))}
+                >
+                  <SelectTrigger className="w-full rounded-lg border border-[#C8A24A]/40 bg-white px-4 py-3 text-gray-800 focus:ring-2 focus:ring-[#C8A24A]/50 focus:border-[#C8A24A]">
+                    <SelectValue placeholder="Select a time slot" />
+                  </SelectTrigger>
+                  <SelectContent className="border border-[#C8A24A]/40 bg-[#fffdf7]">
+                    {timeSlotOptions.map((slot) => (
+                      <SelectItem key={`modal-${slot}`} value={slot} className="focus:bg-[#C8A24A] focus:text-white">
+                        {slot}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <button type="submit" disabled={isSubmitting} className="w-full sm:w-auto inline-flex items-center justify-center rounded-full border border-[#C8A24A] bg-[#C8A24A] px-8 py-3 text-white font-light tracking-wide hover:bg-[#b18d39] transition-all text-base disabled:opacity-60 disabled:cursor-not-allowed">
+                {isSubmitting ? 'Submitting...' : 'Submit'}
+              </button>
+
+              {isSubmitted && (
+                <p className="text-[#7a5f19] bg-[#fff8e8] border border-[#C8A24A]/40 rounded-lg px-4 py-3">
+                  Thank you for your submission. We will be in touch.
+                </p>
+              )}
+
+              {submitError && (
+                <p className="text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+                  {submitError}
+                </p>
+              )}
+            </form>
+          </div>
+        </div>
+      )}
 
       <footer className="bg-white border-t border-[#C8A24A]/20">
         <div className="max-w-6xl mx-auto px-6 py-8 text-center">
